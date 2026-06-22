@@ -77,8 +77,8 @@ MIT License - Feel free to use and modify!
 
 ### 📞 Support
 For questions or support, contact:
-- Email: support@fus-agency.com
-- Phone: +233 XX XXX XXXX
+- Email: BECKHAMMASSEY2003@gmail
+- Phone: +233 598 488 132
 
 ### 🙏 Acknowledgments
 - Font Awesome for icons
