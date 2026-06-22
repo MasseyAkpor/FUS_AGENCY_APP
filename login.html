@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FUS Agency - Login</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="fus-logo.png" />
+    <link rel="apple-touch-icon" href="fus-logo.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e3edfc 0%, #f0f6ff 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 28px;
+            padding: 40px 32px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.10);
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .logo-section img {
+            border-radius: 20px;
+            object-fit: contain;
+            margin: 0 auto;
+            display: block;
+            box-shadow: 0 4px 12px rgba(42,125,225,0.15);
+            width: 100px;
+            height: 100px;
+        }
+
+        .logo-section h1 {
+            font-size: 30px;
+            color: #1a2639;
+            margin-top: 12px;
+            margin-bottom: 2px;
+        }
+
+        .logo-section h1 span {
+            color: #2a7de1;
+        }
+
+        .logo-section .tagline {
+            color: #7a8a9e;
+            font-size: 13px;
+            margin: 0;
+            letter-spacing: 2px;
+        }
+
+        .logo-section .tagline i {
+            color: #f5b342;
+        }
+
+        .tab-switcher {
+            display: flex;
+            background: #f0f2f5;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 24px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            color: #7a8a9e;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: #1a2639;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .tab-btn:hover {
+            color: #1a2639;
+        }
+
+        .tab-btn i {
+            margin-right: 6px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1a2639;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group label i {
+            color: #2a7de1;
+            width: 18px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #dce2ec;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: #2a7de1;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(42,125,225,0.10);
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: #2a7de1;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #1b5fb0;
+            transform: scale(1.01);
+        }
+
+        .btn-success {
+            width: 100%;
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+            transform: scale(1.01);
+        }
+
+        .toggle-link {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 14px;
+            color: #7a8a9e;
+        }
+
+        .toggle-link a {
+            color: #2a7de1;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .toggle-link a:hover {
+            text-decoration: underline;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1a2639;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            max-width: 90%;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: #10b981;
+        }
+
+        .toast.error {
+            background: #ef4444;
+        }
+
+        @media (max-width: 400px) {
+            .login-container {
+                padding: 24px 16px;
+            }
+            .logo-section img {
+                width: 80px;
+                height: 80px;
+            }
+            .logo-section h1 {
+                font-size: 24px;
+            }
+            .tab-btn {
+                font-size: 12px;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="logo-section">
+            <img src="fus-logo-png.webp" alt="FUS Agency" />
+            <h1>FUS <span>Agency</span></h1>
+            <p class="tagline"><i class="fas fa-broom"></i> More Space. Less Stress.</p>
+        </div>
+
+        <div class="tab-switcher">
+            <button class="tab-btn active" id="tabCustomer"><i class="fas fa-user"></i> Customer</button>
+            <button class="tab-btn" id="tabAdmin"><i class="fas fa-user-shield"></i> Admin</button>
+        </div>
+
+        <!-- Customer Section -->
+        <div id="customerSection">
+            <div id="customerLoginForm">
+                <div class="form-group">
+                    <label for="customerLoginEmail"><i class="fas fa-envelope"></i> Email Address</label>
+                    <input type="email" id="customerLoginEmail" placeholder="your@email.com" />
+                </div>
+                <div class="form-group">
+                    <label for="customerLoginPassword"><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="customerLoginPassword" placeholder="••••••••" />
+                </div>
+                <button class="btn-primary" id="customerLoginBtn"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+                <div class="toggle-link">
+                    Don't have an account? <a id="showCustomerSignup">Sign Up</a>
+                </div>
+            </div>
+
+            <div id="customerSignupForm" class="hidden">
+                <div class="form-group">
+                    <label for="customerSignupName"><i class="fas fa-user"></i> Full Name</label>
+                    <input type="text" id="customerSignupName" placeholder="Akosua Appiah" />
+                </div>
+                <div class="form-group">
+                    <label for="customerSignupEmail"><i class="fas fa-envelope"></i> Email Address</label>
+                    <input type="email" id="customerSignupEmail" placeholder="your@email.com" />
+                </div>
+                <div class="form-group">
+                    <label for="customerSignupPhone"><i class="fas fa-phone"></i> Phone Number</label>
+                    <input type="tel" id="customerSignupPhone" placeholder="+233 XX XXX XXXX" />
+                </div>
+                <div class="form-group">
+                    <label for="customerSignupPassword"><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="customerSignupPassword" placeholder="•••••••• (min 6 chars)" />
+                </div>
+                <button class="btn-primary" id="customerSignupBtn"><i class="fas fa-user-plus"></i> Create Account</button>
+                <div class="toggle-link">
+                    Already have an account? <a id="showCustomerLogin">Sign In</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Section -->
+        <div id="adminSection" class="hidden">
+            <div style="text-align:center;margin-bottom:16px;">
+                <i class="fas fa-shield-alt" style="font-size:32px;color:#2a7de1;"></i>
+                <p style="color:#7a8a9e;font-size:13px;margin-top:4px;">Admin access requires special credentials</p>
+            </div>
+
+            <div class="form-group">
+                <label for="adminUsername"><i class="fas fa-user-cog"></i> Username</label>
+                <input type="text" id="adminUsername" placeholder="Enter admin username" />
+            </div>
+            <div class="form-group">
+                <label for="adminPassword"><i class="fas fa-lock"></i> Password</label>
+                <input type="password" id="adminPassword" placeholder="Enter admin password" />
+            </div>
+            <button class="btn-success" id="adminLoginBtn"><i class="fas fa-sign-in-alt"></i> Admin Login</button>
+            <div class="toggle-link">
+                <a id="showCustomerFromAdmin">Back to Customer Login</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ============================================================
+        // ADMIN CREDENTIALS
+        // ============================================================
+        const ADMIN_USERNAME = 'fusadmin';
+        const ADMIN_PASSWORD = 'FUS2026Secure!';
+
+        // ============================================================
+        // DOM REFERENCES
+        // ============================================================
+        const customerSection = document.getElementById('customerSection');
+        const adminSection = document.getElementById('adminSection');
+        const tabCustomer = document.getElementById('tabCustomer');
+        const tabAdmin = document.getElementById('tabAdmin');
+        const customerLoginForm = document.getElementById('customerLoginForm');
+        const customerSignupForm = document.getElementById('customerSignupForm');
+        const showCustomerSignup = document.getElementById('showCustomerSignup');
+        const showCustomerLogin = document.getElementById('showCustomerLogin');
+        const showCustomerFromAdmin = document.getElementById('showCustomerFromAdmin');
+        const customerLoginBtn = document.getElementById('customerLoginBtn');
+        const customerSignupBtn = document.getElementById('customerSignupBtn');
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
+        const adminUsernameInput = document.getElementById('adminUsername');
+        const adminPasswordInput = document.getElementById('adminPassword');
+        const toast = document.getElementById('toast');
+
+        // ============================================================
+        // TAB SWITCHING
+        // ============================================================
+        function switchTab(tab) {
+            if (tab === 'customer') {
+                customerSection.classList.remove('hidden');
+                adminSection.classList.add('hidden');
+                tabCustomer.classList.add('active');
+                tabAdmin.classList.remove('active');
+            } else {
+                customerSection.classList.add('hidden');
+                adminSection.classList.remove('hidden');
+                tabAdmin.classList.add('active');
+                tabCustomer.classList.remove('active');
+                adminUsernameInput.value = '';
+                adminPasswordInput.value = '';
+            }
+        }
+
+        tabCustomer.addEventListener('click', () => switchTab('customer'));
+        tabAdmin.addEventListener('click', () => switchTab('admin'));
+
+        showCustomerSignup.addEventListener('click', () => {
+            customerLoginForm.classList.add('hidden');
+            customerSignupForm.classList.remove('hidden');
+        });
+
+        showCustomerLogin.addEventListener('click', () => {
+            customerSignupForm.classList.add('hidden');
+            customerLoginForm.classList.remove('hidden');
+        });
+
+        showCustomerFromAdmin.addEventListener('click', () => {
+            switchTab('customer');
+        });
+
+        // ============================================================
+        // CUSTOMER SIGNUP
+        // ============================================================
+        customerSignupBtn.addEventListener('click', function() {
+            const name = document.getElementById('customerSignupName').value.trim();
+            const email = document.getElementById('customerSignupEmail').value.trim();
+            const phone = document.getElementById('customerSignupPhone').value.trim();
+            const password = document.getElementById('customerSignupPassword').value;
+
+            if (!name || !email || !phone || !password) {
+                showToast('⚠️ Please fill all fields', 'error');
+                return;
+            }
+            if (password.length < 6) {
+                showToast('⚠️ Password must be at least 6 characters', 'error');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('fusUsers')) || [];
+            if (users.find(u => u.email === email)) {
+                showToast('⚠️ User already exists! Please login', 'error');
+                return;
+            }
+
+            const user = { name, email, phone, password, role: 'customer', createdAt: new Date().toISOString() };
+            users.push(user);
+            localStorage.setItem('fusUsers', JSON.stringify(users));
+            localStorage.setItem('fusUser', JSON.stringify({ name, email, phone, role: 'customer' }));
+
+            showToast('✅ Account created! Redirecting...', 'success');
+            setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+        });
+
+        // ============================================================
+        // CUSTOMER LOGIN
+        // ============================================================
+        customerLoginBtn.addEventListener('click', function() {
+            const email = document.getElementById('customerLoginEmail').value.trim();
+            const password = document.getElementById('customerLoginPassword').value;
+
+            if (!email || !password) {
+                showToast('⚠️ Please fill all fields', 'error');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('fusUsers')) || [];
+            const user = users.find(u => u.email === email && u.password === password);
+
+            if (!user) {
+                showToast('❌ Invalid email or password', 'error');
+                return;
+            }
+
+            localStorage.setItem('fusUser', JSON.stringify({ name: user.name, email: user.email, phone: user.phone, role: 'customer' }));
+            showToast(`✅ Welcome back, ${user.name}!`, 'success');
+            setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+        });
+
+        // ============================================================
+        // ADMIN LOGIN
+        // ============================================================
+        adminLoginBtn.addEventListener('click', function() {
+            const username = adminUsernameInput.value.trim();
+            const password = adminPasswordInput.value.trim();
+
+            if (!username || !password) {
+                showToast('⚠️ Please enter both username and password', 'error');
+                return;
+            }
+
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                localStorage.setItem('fusUser', JSON.stringify({
+                    name: 'Administrator',
+                    email: 'admin@fus-agency.com',
+                    phone: '+233 20 000 0000',
+                    role: 'admin'
+                }));
+                showToast('✅ Admin login successful! Redirecting...', 'success');
+                setTimeout(() => { window.location.href = 'admin.html'; }, 1000);
+            } else {
+                showToast('❌ Invalid admin credentials', 'error');
+                adminUsernameInput.value = '';
+                adminPasswordInput.value = '';
+                adminUsernameInput.focus();
+            }
+        });
+
+        // Enter key support
+        adminPasswordInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') adminLoginBtn.click();
+        });
+        adminUsernameInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') adminPasswordInput.focus();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                if (!customerSection.classList.contains('hidden')) {
+                    if (!customerLoginForm.classList.contains('hidden')) {
+                        customerLoginBtn.click();
+                    } else if (!customerSignupForm.classList.contains('hidden')) {
+                        customerSignupBtn.click();
+                    }
+                }
+            }
+        });
+
+        // ============================================================
+        // TOAST SYSTEM
+        // ============================================================
+        function showToast(message, type = 'info') {
+            toast.textContent = message;
+            toast.className = 'toast show';
+            if (type === 'success') toast.classList.add('success');
+            if (type === 'error') toast.classList.add('error');
+            clearTimeout(toast._timer);
+            toast._timer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ============================================================
+        // REDIRECT IF ALREADY LOGGED IN
+        // ============================================================
+        const currentUser = JSON.parse(localStorage.getItem('fusUser'));
+        if (currentUser) {
+            if (currentUser.role === 'admin') {
+                window.location.href = 'admin.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+
+        console.log('🔐 FUS Agency Login page loaded');
+    </script>
+</body>
+</html>

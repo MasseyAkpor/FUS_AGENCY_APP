@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FUS Agency - Admin Dashboard</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="fus-logo.png" />
+    <link rel="apple-touch-icon" href="fus-logo-png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f0f2f5;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .admin-login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(8px);
+        }
+
+        .admin-login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .admin-login-box img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 16px;
+            border-radius: 16px;
+        }
+
+        .admin-login-box h2 {
+            color: #1a2639;
+            margin-bottom: 4px;
+        }
+
+        .admin-login-box .subtitle {
+            color: #7a8a9e;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .admin-login-box .form-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .admin-login-box .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1a2639;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .admin-login-box .form-group label i {
+            color: #2a7de1;
+            width: 18px;
+        }
+
+        .admin-login-box .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1.5px solid #dce2ec;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+
+        .admin-login-box .form-group input:focus {
+            border-color: #2a7de1;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(42,125,225,0.1);
+        }
+
+        .admin-login-box .error-msg {
+            color: #ef4444;
+            font-size: 13px;
+            margin-bottom: 12px;
+            display: none;
+        }
+
+        .admin-login-box .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .admin-login-box .btn-login:hover {
+            background: #059669;
+            transform: scale(1.01);
+        }
+
+        .admin-login-box .back-link {
+            display: block;
+            margin-top: 12px;
+            color: #7a8a9e;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .admin-login-box .back-link:hover {
+            color: #2a7de1;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 16px 24px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .admin-header .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+        }
+
+        .admin-header .brand img {
+            border-radius: 10px;
+            object-fit: contain;
+            width: 45px;
+            height: 45px;
+            transition: all 0.3s ease;
+        }
+
+        .admin-header .brand img:hover {
+            transform: scale(1.05);
+        }
+
+        .admin-header .brand h1 {
+            font-size: 22px;
+            margin: 0;
+            color: #1a2639;
+        }
+
+        .admin-header .brand h1 span {
+            color: #2a7de1;
+        }
+
+        .admin-header .brand small {
+            font-size: 11px;
+            color: #7a8a9e;
+            letter-spacing: 1px;
+            display: block;
+        }
+
+        .admin-header .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-sm {
+            padding: 6px 14px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .btn-sm:hover {
+            transform: scale(1.02);
+        }
+
+        .btn-sm.refresh {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-sm.clear {
+            background: #2a7de1;
+            color: white;
+        }
+
+        .btn-sm.logout {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-sm.complete {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-sm.cancel {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-sm.delete {
+            background: #7a8a9e;
+            color: white;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 16px;
+            color: #2a7de1;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .stat-card .number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a2639;
+        }
+
+        .stat-card .label {
+            font-size: 13px;
+            color: #7a8a9e;
+            margin-top: 4px;
+        }
+
+        .stat-card .icon {
+            float: right;
+            font-size: 32px;
+            color: #2a7de1;
+            opacity: 0.3;
+        }
+
+        .admin-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .admin-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .card h2 {
+            font-size: 16px;
+            color: #1a2639;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .booking-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .booking-table th {
+            text-align: left;
+            padding: 8px 0;
+            color: #7a8a9e;
+            font-weight: 600;
+            border-bottom: 2px solid #e9edf4;
+        }
+
+        .booking-table td {
+            padding: 10px 0;
+            border-bottom: 1px solid #e9edf4;
+        }
+
+        .booking-table .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-badge.confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-badge.completed {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .status-badge.cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .booking-table .actions-cell {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .organizer-list {
+            list-style: none;
+        }
+
+        .organizer-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9edf4;
+        }
+
+        .organizer-list li:last-child {
+            border-bottom: none;
+        }
+
+        .organizer-list .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .status-dot.online {
+            background: #10b981;
+        }
+
+        .status-dot.offline {
+            background: #7a8a9e;
+        }
+
+        .status-dot.busy {
+            background: #f59e0b;
+        }
+
+        .access-denied {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f4f7fb;
+            padding: 20px;
+        }
+
+        .access-denied-box {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+
+        .access-denied-box .icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .access-denied-box h2 {
+            color: #1a2639;
+            margin-bottom: 8px;
+        }
+
+        .access-denied-box p {
+            color: #7a8a9e;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .access-denied-box .btn-back {
+            display: inline-block;
+            background: #2a7de1;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .access-denied-box .btn-back:hover {
+            background: #1b5fb0;
+            transform: scale(1.02);
+        }
+
+        @media (max-width: 600px) {
+            .admin-header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            .admin-header .brand {
+                justify-content: center;
+            }
+            .admin-header .actions {
+                justify-content: center;
+            }
+            .booking-table {
+                font-size: 11px;
+            }
+            .booking-table th,
+            .booking-table td {
+                padding: 6px 4px;
+            }
+            .stat-card .number {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== ADMIN LOGIN OVERLAY ===== -->
+    <div class="admin-login-overlay" id="adminLoginOverlay">
+        <div class="admin-login-box">
+            <img src="fus-logo-png.webp" alt="FUS Agency" />
+            <h2>🔐 Admin Access</h2>
+            <p class="subtitle">This area is restricted to administrators only</p>
+            
+            <div class="form-group">
+                <label for="adminUsername"><i class="fas fa-user-cog"></i> Username</label>
+                <input type="text" id="adminUsername" placeholder="Enter admin username" />
+            </div>
+            <div class="form-group">
+                <label for="adminPassword"><i class="fas fa-lock"></i> Password</label>
+                <input type="password" id="adminPassword" placeholder="Enter admin password" />
+            </div>
+            
+            <div class="error-msg" id="adminErrorMsg">❌ Invalid credentials. Please try again.</div>
+            
+            <button class="btn-login" id="adminLoginBtn">
+                <i class="fas fa-sign-in-alt"></i> Admin Login
+            </button>
+            
+            <a href="login.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Login</a>
+        </div>
+    </div>
+
+    <!-- ===== ADMIN CONTENT ===== -->
+    <div class="admin-container" id="adminContent" style="display:none;">
+        <a href="login.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Login</a>
+
+        <div class="admin-header">
+            <div class="brand" onclick="window.location.href='login.html'">
+                <img src="fus-logo.png" alt="FUS Agency" />
+                <div>
+                    <h1>FUS <span>Agency</span></h1>
+                    <small><i class="fas fa-chart-line"></i> Admin Dashboard</small>
+                </div>
+            </div>
+            <div class="actions">
+                <button class="btn-sm refresh" onclick="refreshData()">
+                    <i class="fas fa-sync"></i> Refresh
+                </button>
+                <button class="btn-sm clear" onclick="clearAllData()">
+                    <i class="fas fa-trash"></i> Clear All
+                </button>
+                <button class="btn-sm logout" onclick="logoutAdmin()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <div class="admin-stats" id="statsContainer">
+            <div class="stat-card">
+                <div class="number" id="totalBookings">0</div>
+                <div class="label">Total Bookings</div>
+                <div class="icon"><i class="fas fa-calendar-check"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="confirmedBookings">0</div>
+                <div class="label">Confirmed</div>
+                <div class="icon"><i class="fas fa-check-circle"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="completedBookings">0</div>
+                <div class="label">Completed</div>
+                <div class="icon"><i class="fas fa-flag-checkered"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="totalRevenue">GHS 0</div>
+                <div class="label">Total Revenue</div>
+                <div class="icon"><i class="fas fa-money-bill-wave"></i></div>
+            </div>
+        </div>
+
+        <div class="admin-content">
+            <div class="card">
+                <h2><i class="fas fa-list" style="color:#2a7de1;"></i> Recent Bookings</h2>
+                <div style="overflow-x:auto;">
+                    <table class="booking-table" id="bookingsTable">
+                        <thead>
+                            <tr>
+                                <th>Service</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingsTableBody">
+                            <tr><td colspan="5" style="text-align:center;color:#7a8a9e;padding:20px;">No bookings yet</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-users" style="color:#2a7de1;"></i> Organizers</h2>
+                <ul class="organizer-list" id="organizerList">
+                    <li><span><span class="status-dot online"></span> Ashley Racheal</span><span style="font-size:12px;color:#7a8a9e;">5 jobs</span></li>
+                    <li><span><span class="status-dot online"></span> Tetteh Dorica</span><span style="font-size:12px;color:#7a8a9e;">3 jobs</span></li>
+                    <li><span><span class="status-dot busy"></span> Annan Lawrencia</span><span style="font-size:12px;color:#7a8a9e;">2 jobs</span></li>
+                    <li><span><span class="status-dot offline"></span> Fred-Mensah Christable</span><span style="font-size:12px;color:#7a8a9e;">0 jobs</span></li>
+                    <li><span><span class="status-dot online"></span> Ampofo Amanda</span><span style="font-size:12px;color:#7a8a9e;">4 jobs</span></li>
+                    <li><span><span class="status-dot online"></span> Dimake Martha</span><span style="font-size:12px;color:#7a8a9e;">1 job</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // ADMIN CREDENTIALS
+        // ============================================================
+        const ADMIN_USERNAME = 'fusadmin';
+        const ADMIN_PASSWORD = 'FUS2026Secure!';
+
+        // ============================================================
+        // DOM REFERENCES
+        // ============================================================
+        const overlay = document.getElementById('adminLoginOverlay');
+        const adminContent = document.getElementById('adminContent');
+        const usernameInput = document.getElementById('adminUsername');
+        const passwordInput = document.getElementById('adminPassword');
+        const loginBtn = document.getElementById('adminLoginBtn');
+        const errorMsg = document.getElementById('adminErrorMsg');
+
+        // ============================================================
+        // AUTHENTICATION
+        // ============================================================
+        function checkAuth() {
+            const user = JSON.parse(localStorage.getItem('fusUser'));
+            
+            if (!user || user.role !== 'admin') {
+                overlay.style.display = 'flex';
+                adminContent.style.display = 'none';
+                errorMsg.style.display = 'none';
+                usernameInput.value = '';
+                passwordInput.value = '';
+                usernameInput.focus();
+                return false;
+            }
+            
+            overlay.style.display = 'none';
+            adminContent.style.display = 'block';
+            loadBookings();
+            return true;
+        }
+
+        function authenticateAdmin() {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            if (!username || !password) {
+                errorMsg.textContent = '❌ Please enter both username and password';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                localStorage.setItem('fusUser', JSON.stringify({
+                    name: 'Administrator',
+                    email: 'admin@fus-agency.com',
+                    phone: '+233 20 000 0000',
+                    role: 'admin'
+                }));
+                
+                overlay.style.display = 'none';
+                adminContent.style.display = 'block';
+                errorMsg.style.display = 'none';
+                loadBookings();
+            } else {
+                errorMsg.textContent = '❌ Invalid admin credentials';
+                errorMsg.style.display = 'block';
+                usernameInput.value = '';
+                passwordInput.value = '';
+                usernameInput.focus();
+            }
+        }
+
+        function logoutAdmin() {
+            if (confirm('Logout from admin dashboard?')) {
+                localStorage.removeItem('fusUser');
+                overlay.style.display = 'flex';
+                adminContent.style.display = 'none';
+                errorMsg.textContent = '✅ Logged out successfully.';
+                errorMsg.style.display = 'block';
+                errorMsg.style.color = '#10b981';
+                usernameInput.value = '';
+                passwordInput.value = '';
+                usernameInput.focus();
+            }
+        }
+
+        // ============================================================
+        // ADMIN FUNCTIONS
+        // ============================================================
+        function loadBookings() {
+            const bookings = JSON.parse(localStorage.getItem('fusBookings')) || [];
+
+            const total = bookings.length;
+            const confirmed = bookings.filter(b => b.status === 'Confirmed').length;
+            const completed = bookings.filter(b => b.status === 'Completed').length;
+            const totalRevenue = bookings.reduce((sum, b) => sum + (b.price || 0), 0);
+
+            document.getElementById('totalBookings').textContent = total;
+            document.getElementById('confirmedBookings').textContent = confirmed;
+            document.getElementById('completedBookings').textContent = completed;
+            document.getElementById('totalRevenue').textContent = `GHS ${totalRevenue}`;
+
+            const tbody = document.getElementById('bookingsTableBody');
+            if (bookings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#7a8a9e;padding:20px;">No bookings yet</td></tr>';
+                return;
+            }
+
+            const reversed = [...bookings].reverse().slice(0, 10);
+            tbody.innerHTML = reversed.map(b => `
+                <tr>
+                    <td><strong>${b.service}</strong></td>
+                    <td>${b.customer}</td>
+                    <td>${b.date}</td>
+                    <td><span class="status-badge ${b.status.toLowerCase()}">${b.status}</span></td>
+                    <td>
+                        <div class="actions-cell">
+                            ${b.status === 'Confirmed' ? `
+                                <button class="btn-sm complete" onclick="updateStatus(${b.id}, 'Completed')">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button class="btn-sm cancel" onclick="updateStatus(${b.id}, 'Cancelled')">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            ` : ''}
+                            <button class="btn-sm delete" onclick="deleteBooking(${b.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateStatus(id, newStatus) {
+            let bookings = JSON.parse(localStorage.getItem('fusBookings')) || [];
+            const index = bookings.findIndex(b => b.id === id);
+            if (index !== -1) {
+                bookings[index].status = newStatus;
+                localStorage.setItem('fusBookings', JSON.stringify(bookings));
+                loadBookings();
+                showToast(`✅ Booking marked as ${newStatus}`);
+            }
+        }
+
+        function deleteBooking(id) {
+            if (!confirm('Delete this booking?')) return;
+            let bookings = JSON.parse(localStorage.getItem('fusBookings')) || [];
+            bookings = bookings.filter(b => b.id !== id);
+            localStorage.setItem('fusBookings', JSON.stringify(bookings));
+            loadBookings();
+            showToast('🗑️ Booking deleted');
+        }
+
+        function clearAllData() {
+            if (!confirm('⚠️ Delete ALL bookings? This cannot be undone!')) return;
+            localStorage.removeItem('fusBookings');
+            loadBookings();
+            showToast('🗑️ All bookings cleared');
+        }
+
+        function refreshData() {
+            loadBookings();
+            showToast('🔄 Data refreshed');
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+                background: #1a2639; color: white; padding: 12px 24px;
+                border-radius: 40px; font-size: 14px; font-weight: 500;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 999;
+                opacity: 0; transition: opacity 0.3s ease;
+                max-width: 90%; text-align: center;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => { toast.style.opacity = '1'; }, 50);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // ============================================================
+        // EVENT LISTENERS
+        // ============================================================
+        loginBtn.addEventListener('click', authenticateAdmin);
+        passwordInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') authenticateAdmin();
+        });
+        usernameInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') passwordInput.focus();
+        });
+
+        // ============================================================
+        // INITIALIZE
+        // ============================================================
+        checkAuth();
+        console.log('🔐 FUS Agency Admin Dashboard loaded - No Session Timeout');
+    </script>
+</body>
+</html>
